@@ -1,0 +1,10 @@
+*
+!.gitignore
+!README.md
+!inventory.py
+!server.py
+!打开看板.command
+!web/
+!web/index.html
+!web/style.css
+!web/app.js

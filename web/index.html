@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI 资产目录</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="/style.css" />
+    <script defer src="/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="shell top">
+        <div class="brand">
+          <span class="mark" aria-hidden="true">▦</span> AI 资产目录
+        </div>
+        <span class="local"><i></i>本机工作区</span>
+      </div>
+    </header>
+    <main class="shell">
+      <section class="intro">
+        <div>
+          <h1>资产总览</h1>
+          <p id="subtitle">Codex 与 Claude 的本机目录</p>
+        </div>
+        <div class="refresh">
+          <span id="stamp" role="status">正在读取本机目录…</span
+          ><button id="reload">刷新目录</button>
+        </div>
+      </section>
+      <section class="cards" aria-label="按资产类别筛选"></section>
+      <section class="library">
+        <div class="libhead">
+          <h2>资产明细</h2>
+          <span id="total"></span>
+        </div>
+        <div class="controls">
+          <input
+            type="search"
+            id="search"
+            aria-label="搜索资产"
+            placeholder="搜索名称、用途、来源…"
+            autocomplete="off"
+          /><select id="app" aria-label="按来源筛选">
+            <option value="">全部来源</option>
+            <option>Codex</option>
+            <option>Claude</option>
+            <option value="shared">两端共用</option></select
+          ><select id="group" aria-label="按类型筛选">
+            <option value="">全部类型</option></select
+          ><select id="sort" aria-label="排序">
+            <option value="recent">最近更新</option>
+            <option value="name">名称排序</option>
+          </select>
+        </div>
+        <div id="filters"></div>
+        <p id="alert" role="alert" hidden></p>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>名称与用途</th>
+                <th>来源</th>
+                <th>类型</th>
+                <th>文件更新</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <div class="foot">
+          <span id="range"></span>
+          <div>
+            <button id="prev">上一页</button><button id="next">下一页</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <dialog id="detail">
+      <div class="dialoghead">
+        <h2 id="title"></h2>
+        <button id="close">关闭</button>
+      </div>
+      <div id="body"></div>
+    </dialog>
+  </body>
+</html>
