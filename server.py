@@ -11,6 +11,7 @@ from urllib.parse import urlsplit
 from inventory import Inventory
 
 WEB = Path(__file__).parent / 'web'
+LOCAL_LABELS = WEB.parent / '.local-labels.json'
 ASSETS = {'/': ('index.html', 'text/html'), '/app.js': ('app.js', 'text/javascript'),
           '/style.css': ('style.css', 'text/css')}
 
@@ -20,11 +21,15 @@ def demo():
     for index, (kind, title, desc, group, apps) in enumerate([
         ('skill','整理阅读笔记','把一周的阅读摘录整理成带主题和出处的笔记。','个人 Skill',['Codex','Claude']),
         ('memory','周报写作偏好','先列本周交付，再写下周计划。','长期记忆',['Claude']),
+        ('memory','模拟器截图方法','记录本地模拟器的截图步骤与存放位置。','长期记忆',['Codex']),
+        ('memory','发布前的核对顺序','记录一次版本交付的核对清单。','会话摘要',['Codex']),
+        ('memory','个人创作笔记','用照片整理一次旅行中的观察。','补充记忆',['Claude']),
         ('mcp','example-calendar','查询虚构日历中的示例事件。','MCP 服务',['Codex']),
     ]):
         items.append(dict(id=str(index), kind=kind, title=title, description=desc,
                           sources=[dict(app=a, scope='虚构示例', path='示例来源', status='示例') for a in apps],
                           groups=[group], updated=0))
+    items[-1]['displayName'] = '连接示例日历'
     return dict(items=items, warnings=[], scanned=datetime.now(timezone.utc).isoformat(), demo=True)
 
 
@@ -66,6 +71,12 @@ def main():
                     with lock:
                         inv = Inventory(Path.home(), [p.expanduser().resolve() for p in args.project])
                         result = inv.scan()
+                        labels = inv.config(LOCAL_LABELS)
+                        for row in result['items']:
+                            entry = labels.get(row['kind'] + ':' + row['title'])
+                            if isinstance(entry, list) and len(entry) == 2 and all(isinstance(x, str) for x in entry):
+                                row['displayName'], row['purpose'] = entry
+                        result['warnings'] = sorted(inv.warnings)
                         files.clear()
                         files.update(inv.files)
                 return self.send(200,json.dumps(result, ensure_ascii=False).encode(),'application/json')
